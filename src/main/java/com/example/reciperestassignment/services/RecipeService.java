@@ -10,9 +10,11 @@ public interface RecipeService {
     void update (RecipeDto recipeDto, Integer id);
     void deleteById(Integer id);
     List<RecipeDto> findAllByCategory(String category);
+    List<RecipeDto> findByIngredientName(String ingredientName);
     List<RecipeDto> findAll();
     RecipeDto findById(Integer id);
-    RecipeDto findByName(String name);
+    List<RecipeDto> findByPartOfName(String name);
+    RecipeDto findByRecipeName(String name);
 
 }
 
