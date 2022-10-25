@@ -1,14 +1,14 @@
 package com.example.reciperestassignment.repository;
 
 import com.example.reciperestassignment.entities.Ingredient;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface IngredientRepository extends CrudRepository<Ingredient,Integer> {
+public interface IngredientRepository extends JpaRepository<Ingredient,Integer> {
 
     //--Search for one ingredient object that matches exactly with sent in ingredient name
     Optional<Ingredient> findIngredientByIngredientName(String name);

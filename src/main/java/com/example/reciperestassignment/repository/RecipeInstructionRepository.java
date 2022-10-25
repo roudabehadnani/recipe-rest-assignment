@@ -1,7 +1,7 @@
 package com.example.reciperestassignment.repository;
 
 import com.example.reciperestassignment.entities.RecipeInstruction;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RecipeInstructionRepository extends CrudRepository<RecipeInstruction, Integer> {
+public interface RecipeInstructionRepository extends JpaRepository<RecipeInstruction, Integer> {
 }
