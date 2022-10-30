@@ -1,42 +1,51 @@
 package com.example.reciperestassignment.services;
 
+import com.example.reciperestassignment.dto.RecipeCategoryDto;
 import com.example.reciperestassignment.dto.RecipeDto;
+import com.example.reciperestassignment.dto.RecipeInstructionDto;
 import com.example.reciperestassignment.entities.Recipe;
+import com.example.reciperestassignment.entities.RecipeInstruction;
 import com.example.reciperestassignment.exception.ResourceNotFoundException;
+import com.example.reciperestassignment.form.RecipeForm;
+import com.example.reciperestassignment.repository.RecipeInstructionRepository;
 import com.example.reciperestassignment.repository.RecipeRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RecipeServiceImpl implements RecipeService{
 
     private final ModelMapper modelMapper;
     private final RecipeRepository recipeRepository;
+    private final RecipeInstructionRepository instructionRepository;
 
-    @Autowired
-    public RecipeServiceImpl(ModelMapper modelMapper, RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(ModelMapper modelMapper, RecipeRepository recipeRepository, RecipeInstructionRepository instructionRepository) {
         this.modelMapper = modelMapper;
         this.recipeRepository = recipeRepository;
+        this.instructionRepository = instructionRepository;
     }
 
     @Override
-    public RecipeDto create(RecipeDto recipeDto) {
-        Recipe recipeToEntity = modelMapper.map(recipeDto, Recipe.class);
+    public RecipeDto create(RecipeForm recipeForm) {
+        Recipe recipeToEntity = modelMapper.map(recipeForm, Recipe.class);
         Recipe saveRecipe = recipeRepository.save(recipeToEntity);
         RecipeDto recipeToDto = modelMapper.map(saveRecipe, RecipeDto.class);
         return recipeToDto;
     }
 
     @Override
-    public void update(RecipeDto recipeDto, Integer id) {
-        if (recipeDto == null) throw new IllegalArgumentException("RecipeDto was null");
-        if (recipeDto.getRecipeId() == 0) throw new IllegalArgumentException("RecipeDto.id can not be null");
-        if (!id.equals(recipeDto.getRecipeId())) throw new IllegalArgumentException("Id's need to match");
-        Recipe recipe = modelMapper.map(recipeDto, Recipe.class);
+    public void update(RecipeForm recipeForm, Integer recipeId) {
+        if (recipeForm == null) throw new IllegalArgumentException("Recipe was null");
+        if (recipeId == 0) throw new IllegalArgumentException("Recipe id can not be null");
+
+        Recipe recipe = modelMapper.map(recipeForm, Recipe.class);
         recipeRepository.save(recipe);
     }
 
@@ -63,13 +72,20 @@ public class RecipeServiceImpl implements RecipeService{
 
 
     @Override
-    public RecipeDto findById(Integer id) {
-        if (id == null) throw new IllegalArgumentException("Id was null");
+    public RecipeDto findById(Integer recipeId) {
+        if (recipeId == null) throw new IllegalArgumentException("Id was null");
 
-        Recipe foundRecipe = recipeRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Recipe Not Found"));
+        Recipe foundRecipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new ResourceNotFoundException("Recipe Not Found"));
 
         RecipeDto dto = modelMapper.map(foundRecipe, RecipeDto.class);
+
+
+//        Set<RecipeCategoryDto> list = new HashSet<>();
+//        for (RecipeCategoryDto item : dto.getRecipeCategoryDtoSet()) {
+//            list.add(new RecipeCategoryDto(item.getRecipeCategoryId(), item.getCategory()));
+//        }
+//        return new RecipeDto(dto.getRecipeId(), dto.getRecipeName(), list);
         return dto;
     }
 
